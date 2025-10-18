@@ -1,0 +1,60 @@
+{
+  "id": "peer_stage1",
+  "start": "n1",
+  "nodes": [
+    {
+      "id": "n1",
+      "type": "line",
+      "speaker": "同儕",
+      "text": "喂，又搞砸了嗎？"
+    },
+    {
+      "id": "c1",
+      "type": "choice",
+      "choices": [
+        {
+          "text": "直面嘲諷",
+          "next": "n2",
+          "effects": [
+            {
+              "type": "add_personality",
+              "name": "反抗",
+              "hp": 46,
+              "atk": 13
+            },
+            {
+              "type": "set_flag",
+              "scope": "campus",
+              "key": "peer",
+              "value": "stage1"
+            }
+          ]
+        },
+        {
+          "text": "沉默離開",
+          "next": "n3",
+          "effects": [
+            {
+              "type": "set_flag",
+              "scope": "campus",
+              "key": "peer",
+              "value": "stage1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "n2",
+      "type": "line",
+      "speaker": "同儕",
+      "text": "還挺有骨氣的嘛。"
+    },
+    {
+      "id": "n3",
+      "type": "line",
+      "speaker": "旁白",
+      "text": "你選擇保留力氣，等待更好的時機。"
+    }
+  ]
+}
