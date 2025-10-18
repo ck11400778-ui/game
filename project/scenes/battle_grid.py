@@ -5,6 +5,10 @@ from enum import Enum
 from typing import Dict, List, Tuple, Optional, Set
 from dataclasses import dataclass, field
 from copy import deepcopy
+from enum import Enum
+from typing import Dict, List, Tuple, Optional, Set
+from dataclasses import dataclass, field
+from copy import deepcopy
 
 try:
     from core.config import WIDTH, HEIGHT
@@ -13,46 +17,50 @@ except ImportError:
 
 class BattleState(Enum):
     """戰鬥狀態"""
-    TURN_START = "turn_start"              # 回合開始
-    CHOOSING_ACTION = "choosing_action"    # 選擇行動（移動/技能）
-    MOVING = "moving"                      # 移動中
-    AFTER_MOVE = "after_move"             # 移動後（可再移動或攻擊）
-    SELECTING_SKILL = "selecting_skill"    # 選擇技能
-    SELECTING_TARGETS = "selecting_targets" # 選擇目標範圍
-    EXECUTING_SKILL = "executing_skill"    # 執行技能
-    ANIMATING = "animating"                # 動畫播放
-    TURN_END = "turn_end"                  # 回合結束
-    BATTLE_END = "battle_end"              # 戰鬥結束
+    TURN_START = "turn_start"
+    CHOOSING_ACTION = "choosing_action"
+    MOVING = "moving"
+    AFTER_MOVE = "after_move"
+    SELECTING_SKILL = "selecting_skill"
+    SELECTING_TARGETS = "selecting_targets"
+    EXECUTING_SKILL = "executing_skill"
+    ANIMATING = "animating"
+    TURN_END = "turn_end"
+    BATTLE_END = "battle_end"
 
 class ActionType(Enum):
     """行動類型"""
-    MOVE = "move"          # 移動
-    SKILL = "skill"        # 技能
-    END_TURN = "end_turn"  # 結束回合
+    MOVE = "move"
+    SKILL = "skill"
+    END_TURN = "end_turn"
 
 class SkillType(Enum):
     """技能類型"""
-    DAMAGE = "damage"                    # 純傷害
-    DISPLACEMENT = "displacement"        # 純位移
-    DAMAGE_DISPLACEMENT = "damage_displacement"  # 傷害+位移
-    SELF_TELEPORT = "self_teleport"     # 自己瞬移
-    ALLY_FORMATION = "ally_formation"    # 己方陣型改變
+    DAMAGE = "damage"
+    DISPLACEMENT = "displacement"
+    DAMAGE_DISPLACEMENT = "damage_displacement"
+    SELF_TELEPORT = "self_teleport"
+    ALLY_FORMATION = "ally_formation"
 
 class SkillRange(Enum):
     """技能範圍類型"""
-    SINGLE = "single"          # 單體
-    LINE = "line"              # 直線
-    CROSS = "cross"            # 十字
-    AREA = "area"              # 範圍圓形
-    CUSTOM = "custom"          # 自定義形狀
-    ALL_ENEMIES = "all_enemies" # 全體敵人
-    ALL_ALLIES = "all_allies"   # 全體友軍
+    SINGLE = "single"
+    LINE = "line"
+    CROSS = "cross"
+    AREA = "area"
+    CIRCLE = "circle"
+    CONE = "cone"
+    HORIZONTAL_SWEEP = "horizontal_sweep"
+    VERTICAL_SWEEP = "vertical_sweep"
+    CUSTOM = "custom"
+    ALL_ENEMIES = "all_enemies"
+    ALL_ALLIES = "all_allies"
 
 class Territory(Enum):
     """領地類型"""
-    PLAYER_ZONE = "player_zone"    # 玩家陣地 (左側)
-    BUFFER_ZONE = "buffer_zone"    # 緩衝區 (中間)
-    ENEMY_ZONE = "enemy_zone"      # 敵人陣地 (右側)
+    PLAYER_ZONE = "player_zone"
+    BUFFER_ZONE = "buffer_zone"
+    ENEMY_ZONE = "enemy_zone"
 
 @dataclass
 class Position:
@@ -92,17 +100,18 @@ class Skill:
     damage: int = 0
     
     # 位移相關
-    displacement_distance: int = 0  # 位移距離
-    displacement_direction: str = "away"  # 位移方向: away(遠離), toward(靠近), custom
+    displacement_distance: int = 0
+    displacement_direction: str = "away"
+    custom_knockback: str = ""
     
     # 範圍相關
-    range_distance: int = 3         # 技能射程
-    effect_area: int = 1            # 效果範圍大小
-    custom_pattern: List[Tuple[int, int]] = field(default_factory=list)  # 自定義形狀
+    range_distance: int = 3
+    effect_area: int = 1
+    custom_pattern: List[Tuple[int, int]] = field(default_factory=list)
     
     # 特殊效果
-    self_teleport_positions: List[Tuple[int, int]] = field(default_factory=list)  # 自己可傳送位置
-    formation_pattern: List[Tuple[int, int]] = field(default_factory=list)  # 陣型模式
+    self_teleport_positions: List[Tuple[int, int]] = field(default_factory=list)
+    formation_pattern: List[Tuple[int, int]] = field(default_factory=list)
     
     # 視覺
     icon_name: str = ""
@@ -132,14 +141,14 @@ class Character:
     is_player: bool = True
     
     # 戰鬥狀態
-    has_moved: bool = False         # 本回合是否移動過
-    move_count: int = 0             # 本回合移動次數
-    has_acted: bool = False         # 本回合是否行動過
-    in_enemy_territory: bool = False  # 是否在敵方領地
+    has_moved: bool = False
+    move_count: int = 0
+    has_acted: bool = False
+    in_enemy_territory: bool = False
     
-    # 特殊狀態標記
-    is_taunting: bool = False       # 是否處於嘲諷狀態
-    is_blocking_cursor: bool = False  # 是否阻擋游標
+    # 特殊狀態標記（修復：添加缺失的屬性）
+    is_taunting: bool = False
+    is_blocking_cursor: bool = False
     
     status_effects: Dict[str, int] = field(default_factory=dict)
     facing: str = "right"
@@ -155,7 +164,7 @@ class Character:
         return self.move_count < 2 and not self.has_acted
     
     def can_act(self) -> bool:
-        """是否可以行動（使用技能）"""
+        """是否可以行動(使用技能)"""
         return not self.has_acted
 
 class BattleGrid:
@@ -733,7 +742,17 @@ class TacticalBattleScene:
                     
                     target.current_hp = max(0, target.current_hp - damage)
                     print(f"{caster.name} 對 {target.name} 造成 {damage} 點傷害")
-        
+                    
+                    # 🔥 新增：檢查死亡並立即移除
+                    if target.current_hp <= 0:
+                        print(f"💀 {target.name} 已被擊敗！")
+                        # 從格子移除
+                        if pos in self.grid.characters:
+                            del self.grid.characters[pos]
+                        # 從回合順序移除
+                        if target in self.turn_order:
+                            self.turn_order.remove(target)
+    
         # 執行位移效果
         if skill.skill_type in [SkillType.DISPLACEMENT, SkillType.DAMAGE_DISPLACEMENT]:
             self._apply_displacement(caster, skill, affected_positions, target_pos)
@@ -747,6 +766,7 @@ class TacticalBattleScene:
             self._apply_formation(caster, skill, target_pos)
         
         caster.has_acted = True
+            
     
     def _apply_displacement(self, caster: Character, skill: Skill, affected_positions: List[Position], center_pos: Position):
         """執行位移效果（各種擊退方式）"""
