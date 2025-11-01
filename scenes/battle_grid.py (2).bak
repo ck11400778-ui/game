@@ -1,0 +1,366 @@
+import pygame, random
+from typing import Tuple, List, Optional
+from core.config import COLOR, WIDTH, HEIGHT
+from core.ui import draw_text
+from core.grid import Grid, TEAM_PLAYER, TEAM_ENEMY, Unit
+
+CELL = 56
+PADDING = 24
+
+# === 技能設定（不可旋轉的固定範圍） ===
+SKILLS_PLAYER = [
+    {"id":"p_strike", "name":"直刺", "pattern":"line_right_3", "knock":1, "recoil":1, "dmg_mul":1.0},
+    {"id":"p_sweep",  "name":"橫掃", "pattern":"cross",        "knock":1, "recoil":1, "dmg_mul":0.8},
+    {"id":"p_bomb",   "name":"心雷", "pattern":"aoe3",         "knock":0, "recoil":0, "dmg_mul":1.3},
+]
+SKILLS_ENEMY = [
+    {"id":"e_strike", "name":"直刺", "pattern":"line_left_3",  "knock":1, "recoil":1, "dmg_mul":1.0},
+    {"id":"e_sweep",  "name":"橫掃", "pattern":"cross",        "knock":1, "recoil":1, "dmg_mul":0.8},
+    {"id":"e_bomb",   "name":"心雷", "pattern":"aoe3",         "knock":1, "recoil":1, "dmg_mul":1.0},
+]
+
+PATTERNS = {
+    "line_right_3": [(0,0),(1,0),(2,0)],
+    "line_left_3":  [(0,0),(-1,0),(-2,0)],
+    "cross":        [(0,0),(1,0),(-1,0),(0,1),(0,-1)],
+    "aoe3":         [(dx,dy) for dx in (-1,0,1) for dy in (-1,0,1)]
+}
+
+def build(assets):
+    return {
+        "name": "battle_grid",
+        "assets": assets,
+        "left": Grid(),
+        "right": Grid(),
+        "phase": "player",
+        "cursor_board": "left",
+        "cursor": [0,0],
+        "selected": None,        # (board, uid)
+        "pending_skill": None,   # 等待點選目標的技能
+        "log": [],
+        "round": 1,
+        # UI 位置快取
+        "_ox_left": PADDING,
+        "_oy": 80,
+        "_ox_right": WIDTH - PADDING - CELL*6,
+    }
+
+def start(state):
+    scene = state["scenes"]["battle_grid"]
+    scene["left"] = Grid(); scene["right"] = Grid()
+    scene["left"].add_unit("勇氣", "player", 30, 8,  1, 2)
+    scene["left"].add_unit("冷靜", "player", 24, 6,  0, 4)
+    scene["left"].add_unit("衝動", "player", 22,10,  2, 1)
+    scene["right"].add_unit("拖延蟲", "enemy", 22, 6,  3, 2)
+    scene["right"].add_unit("羞恥影", "enemy", 26, 7,  4, 4)
+    scene["right"].add_unit("否定之聲", "enemy", 32, 8,  5, 1)
+    scene["log"] = [f"進入格鬥：回合 {scene['round']}（方向鍵/空白/數字 + 滑鼠操作）"]
+
+def loop(screen, state, assets):
+    scene = state["scenes"]["battle_grid"]
+    evts = pygame.event.get()
+    for e in evts:
+        if e.type == pygame.QUIT: raise SystemExit
+        if e.type == pygame.KEYDOWN and e.key == pygame.K_ESCAPE:
+            state["current"]="mind_hub"
+
+    if scene["phase"] == "player":
+        handle_player_input(scene, evts)
+    if scene["phase"] == "enemy":
+        enemy_turn(scene)
+    check_end_or_next_phase(scene)
+
+    screen.fill(COLOR["bg"])
+    draw_boards(screen, scene)
+    draw_ui(screen, scene)
+
+def handle_player_input(scene, evts):
+    for e in evts:
+        if e.type == pygame.KEYDOWN:
+            # 游標：方向鍵或 WASD
+            if e.key in (pygame.K_LEFT, pygame.K_RIGHT, pygame.K_UP, pygame.K_DOWN,
+                         pygame.K_a, pygame.K_d, pygame.K_w, pygame.K_s):
+                dx = int(e.key in (pygame.K_RIGHT, pygame.K_d)) - int(e.key in (pygame.K_LEFT, pygame.K_a))
+                dy = int(e.key in (pygame.K_DOWN,  pygame.K_s)) - int(e.key in (pygame.K_UP,   pygame.K_w))
+                move_cursor(scene, dx, dy)
+            elif e.key == pygame.K_TAB:
+                scene["cursor_board"] = "right" if scene["cursor_board"]=="left" else "left"
+            elif e.key == pygame.K_RETURN:
+                # Enter：若沒選單位→選；若有 pending_skill 且游標在敵盤→施放；否則無動作
+                if not scene["selected"]:
+                    select_unit(scene)
+                else:
+                    if scene["pending_skill"] and scene["cursor_board"]=="right":
+                        perform_player_skill_at_cursor(scene)
+            elif e.key == pygame.K_SPACE:
+                # Space：若選中單位→嘗試移到游標（相鄰）；若有 pending_skill 且游標在敵盤→施放
+                if scene["selected"] and not scene["pending_skill"]:
+                    try_move_selected(scene, to_cursor=True)
+                elif scene["selected"] and scene["pending_skill"] and scene["cursor_board"]=="right":
+                    perform_player_skill_at_cursor(scene)
+            elif e.key in (pygame.K_1, pygame.K_2, pygame.K_3):
+                # 數字鍵：選擇技能（需先選單位）；再次按同鍵取消
+                if not scene["selected"]:
+                    scene["log"].append("先選擇我方單位（Enter 或滑鼠左鍵）")
+                else:
+                    idx = e.key - pygame.K_1
+                    skill = SKILLS_PLAYER[idx]
+                    if scene["pending_skill"] and scene["pending_skill"]["id"] == skill["id"]:
+                        scene["pending_skill"] = None
+                        scene["log"].append("取消待施放技能")
+                    else:
+                        scene["pending_skill"] = skill
+                        # 自動把游標切到敵盤
+                        scene["cursor_board"] = "right"
+                        scene["log"].append(f"準備施放：{skill['name']}，選擇目標（空白或 Enter 確認；或滑鼠點目標）")
+            elif e.key == pygame.K_q:
+                scene["phase"] = "enemy"; scene["log"].append("你結束了玩家階段。")
+
+        elif e.type == pygame.MOUSEBUTTONDOWN:
+            # 滑鼠操作
+            if e.button == 1:  # 左鍵：選取/移動/指定目標
+                hit = screen_to_board(scene, e.pos)
+                if not hit: 
+                    return
+                b, gx, gy = hit
+                scene["cursor_board"] = b
+                scene["cursor"] = [gx, gy]
+                if scene["pending_skill"]:
+                    if b == "right":
+                        perform_player_skill_at_cursor(scene)
+                elif scene["selected"] is None:
+                    # 嘗試選取我方單位
+                    if b == "left":
+                        u = scene["left"].unit_at(gx, gy)
+                        if u and u.team == "player" and not u.acted:
+                            scene["selected"] = ("left", u.id)
+                            scene["log"].append(f"選擇 {u.name}：Space 移動一步、1/2/3 攻擊、右鍵取消")
+                else:
+                    # 已選單位：若點擊我方盤相鄰空格→移動一步
+                    sb, uid = scene["selected"]
+                    if b == "left" and sb == "left":
+                        u = scene["left"].units[uid]
+                        if abs(gx - u.x) + abs(gy - u.y) == 1 and scene["left"].unit_at(gx, gy) is None:
+                            try_move_selected(scene, to_cursor=True)
+            elif e.button == 3:  # 右鍵取消
+                scene["pending_skill"] = None
+                scene["selected"] = None
+                scene["log"].append("已取消選取/技能")
+
+def screen_to_board(scene, pos) -> Optional[Tuple[str,int,int]]:
+    x, y = pos
+    ox_l, oy, ox_r = scene["_ox_left"], scene["_oy"], scene["_ox_right"]
+    # 左盤
+    if ox_l <= x < ox_l + CELL*6 and oy <= y < oy + CELL*6:
+        gx = (x - ox_l) // CELL; gy = (y - oy) // CELL
+        return ("left", int(gx), int(gy))
+    # 右盤
+    if ox_r <= x < ox_r + CELL*6 and oy <= y < oy + CELL*6:
+        gx = (x - ox_r) // CELL; gy = (y - oy) // CELL
+        return ("right", int(gx), int(gy))
+    return None
+
+def perform_player_skill_at_cursor(scene):
+    # 在游標位置（敵盤）施放 pending_skill
+    skill = scene["pending_skill"]
+    if not skill:
+        return
+    if scene["cursor_board"] != "right":
+        scene["log"].append("把游標移到敵方棋盤再施放")
+        return
+
+    sel = scene["selected"]
+    if not sel:
+        scene["log"].append("先選擇要行動的單位")
+        return
+    b, uid = sel
+    if b != "left":
+        scene["log"].append("必須是我方單位")
+        return
+
+    left = scene["left"]; right = scene["right"]
+    me: Unit = left.units[uid]
+    if me.acted:
+        scene["log"].append(f"{me.name} 已行動。")
+        return
+
+    tx, ty = scene["cursor"]
+    coords = []
+    for dx, dy in PATTERNS[skill["pattern"]]:
+        x, y = tx + dx, ty + dy
+        if right.in_bounds(x,y):
+            coords.append((x,y))
+
+    total = 0
+    for x,y in coords:
+        u = right.unit_at(x,y)
+        if not u: continue
+        dmg = int(me.atk * skill["dmg_mul"])
+        right.damage_unit(u.id, dmg)
+        total += dmg
+        if u.id in right.units and skill["knock"]>0:
+            right.push_unit(u.id, +1, 0, steps=skill["knock"])
+
+    if skill["recoil"]>0:
+        left.push_unit(me.id, -1, 0, steps=1)
+
+    me.acted = True
+    scene["selected"] = None
+    scene["pending_skill"] = None
+    scene["log"].append(f"{me.name} 使用「{skill['name']}」，總傷害 {total}")
+
+def try_move_selected(scene, to_cursor=False, dxdy:Tuple[int,int]=(0,0)):
+    b, uid = scene["selected"]
+    grid = scene["left"] if b=="left" else scene["right"]
+    u = grid.units[uid]
+    if to_cursor:
+        tx, ty = scene["cursor"]
+        if abs(tx - u.x) + abs(ty - u.y) != 1:
+            scene["log"].append("只能移動到相鄰一格"); return
+        if grid.unit_at(tx,ty) is not None:
+            scene["log"].append("目標格被佔用"); return
+        moved = grid.move_unit(uid, tx-u.x, ty-u.y)
+    else:
+        dx, dy = dxdy
+        moved = grid.move_unit(uid, dx, dy)
+    if moved:
+        scene["log"].append(f"{u.name} 移動至 ({u.x},{u.y})")
+    else:
+        scene["log"].append("無法移動")
+
+def move_cursor(scene, dx, dy):
+    cur = scene["cursor"]
+    cur[0] = max(0, min(5, cur[0] + dx))
+    cur[1] = max(0, min(5, cur[1] + dy))
+
+def select_unit(scene):
+    b = scene["cursor_board"]
+    grid = scene["left"] if b=="left" else scene["right"]
+    u = grid.unit_at(scene["cursor"][0], scene["cursor"][1])
+    if not u:
+        scene["log"].append("此格沒有單位"); return
+    if u.team != "player":
+        scene["log"].append("只能選擇我方單位"); return
+    if u.acted:
+        scene["log"].append(f"{u.name} 本回合已行動"); return
+    scene["selected"] = (b, u.id)
+    scene["log"].append(f"選擇 {u.name}：Space 移動一步、1/2/3 攻擊（需指定目標）、右鍵取消")
+
+def enemy_turn(scene):
+    left, right = scene["left"], scene["right"]
+    enemies = right.team_units("enemy")
+    if not enemies:
+        scene["phase"] = "round_end"; return
+
+    for e in enemies:
+        if e.acted: continue
+        same_row_player = any(p.y == e.y for p in left.team_units("player"))
+        if same_row_player:
+            skill = SKILLS_ENEMY[2]  # 心雷
+            tx = 2; ty = e.y
+            total = apply_enemy_skill_pattern(scene, e, skill, target=(tx,ty))
+        else:
+            skill = random.choice(SKILLS_ENEMY[:2])
+            target = pick_enemy_target_on_left(left, e)
+            total = apply_enemy_skill_pattern(scene, e, skill, target=target)
+        e.acted = True
+        scene["log"].append(f"{e.name} 使用「{skill['name']}」，總傷害 {total}")
+
+    scene["phase"] = "round_end"
+
+def pick_enemy_target_on_left(left: Grid, enemy: Unit) -> Tuple[int,int]:
+    players = left.team_units("player")
+    if not players:
+        return (2, enemy.y)
+    best = max(players, key=lambda u:(u.x, -abs(u.y - enemy.y)))
+    return (best.x, best.y)
+
+def apply_enemy_skill_pattern(scene, enemy: Unit, skill, target: Tuple[int,int]) -> int:
+    left = scene["left"]; right = scene["right"]
+    tx, ty = target
+    coords = []
+    for dx, dy in PATTERNS[skill["pattern"]]:
+        x, y = tx + dx, ty + dy
+        if left.in_bounds(x,y):
+            coords.append((x,y))
+
+    total = 0
+    for x,y in coords:
+        pu = left.unit_at(x,y)
+        if not pu: continue
+        dmg = int(enemy.atk * skill["dmg_mul"])
+        left.damage_unit(pu.id, dmg)
+        total += dmg
+        if pu.id in left.units and skill["knock"]>0:
+            left.push_unit(pu.id, -1, 0, steps=skill["knock"])
+
+    if skill["recoil"]>0:
+        right.push_unit(enemy.id, +1, 0, steps=1)
+
+    return total
+
+def check_end_or_next_phase(scene):
+    left, right = scene["left"], scene["right"]
+    if not left.team_units("player"):
+        scene["log"].append("我方全滅！你失敗了。")
+        scene["phase"] = "end"
+    if not right.team_units("enemy"):
+        scene["log"].append("敵方全滅！你勝利了。")
+        scene["phase"] = "end"
+
+    if scene["phase"] == "round_end":
+        for u in left.all_units(): u.acted = False
+        for u in right.all_units(): u.acted = False
+        scene["round"] += 1
+        scene["phase"] = "player"
+        scene["pending_skill"] = None
+        scene["selected"] = None
+        scene["log"].append(f"—— 第 {scene['round']} 回合 ——")
+
+def draw_boards(screen, scene):
+    left, right = scene["left"], scene["right"]
+    ox_left  = scene["_ox_left"]
+    oy       = scene["_oy"]
+    ox_right = scene["_ox_right"]
+
+    draw_board(screen, left,  ox_left,  oy, is_left=True,  cursor=(scene["cursor"] if scene["cursor_board"]=="left" else None), scene=scene)
+    draw_board(screen, right, ox_right, oy, is_left=False, cursor=(scene["cursor"] if scene["cursor_board"]=="right" else None), scene=scene)
+
+def draw_board(screen, grid:Grid, ox:int, oy:int, is_left:bool, cursor=None, scene=None):
+    import pygame
+    pygame.draw.rect(screen, (28,28,32), (ox-8, oy-8, CELL*6+16, CELL*6+16))
+    for y in range(6):
+        for x in range(6):
+            rect = pygame.Rect(ox + x*CELL, oy + y*CELL, CELL-2, CELL-2)
+            pygame.draw.rect(screen, (50,160,90) if is_left else (80,80,120), rect)
+            pygame.draw.rect(screen, (20,20,20), rect, 1)
+
+            # AoE 預覽：若有 pending_skill 且此格在其範圍內，覆蓋一層半透明
+            if scene and scene["pending_skill"] and ((not is_left and scene["cursor_board"]=="right")):
+                tx, ty = scene["cursor"]
+                for dx, dy in PATTERNS[scene["pending_skill"]["pattern"]]:
+                    px, py = tx+dx, ty+dy
+                    if px==x and py==y and grid.in_bounds(x,y):
+                        s = pygame.Surface((CELL-2, CELL-2), pygame.SRCALPHA)
+                        s.fill((255,230,120,90))
+                        screen.blit(s, (rect.x, rect.y))
+
+            u = grid.unit_at(x,y)
+            if u:
+                col = (160,220,255) if u.team==TEAM_PLAYER else (255,140,140)
+                pygame.draw.rect(screen, col, rect.inflate(-14,-14))
+                draw_text(screen, f"{u.name}", (rect.x+6, rect.y+6), (0,0,0))
+                draw_text(screen, f"{u.hp}", (rect.x+6, rect.y+26), (0,0,0))
+    if cursor is not None:
+        cx, cy = cursor
+        pygame.draw.rect(screen, (255,230,120), (ox + cx*CELL, oy + cy*CELL, CELL-2, CELL-2), 3)
+
+def draw_ui(screen, scene):
+    draw_text(screen, f"格鬥 回合 {scene['round']} 階段：{scene['phase']}", (16, 16), (255,230,120))
+    help_txt = "鍵盤：方向鍵/WASD 移游標，Enter 選單位，Space 移一步，1/2/3 選技能（需指定目標），Tab 切盤，Q 結束。滑鼠：左鍵選/移/點目標，右鍵取消。"
+    draw_text(screen, help_txt, (16, 42))
+    y = HEIGHT - 130
+    if scene["pending_skill"]:
+        draw_text(screen, f"待施放：{scene['pending_skill']['name']}（請選目標）", (16, y), (255,230,120)); y += 22
+    for log in scene["log"][-4:]:
+        draw_text(screen, log, (16, y)); y += 22
