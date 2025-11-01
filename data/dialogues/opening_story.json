@@ -1,0 +1,26 @@
+{
+  "id": "opening_story",
+  "lines": [
+    {
+      "speaker": "旁白",
+      "portrait": "旁白.png",
+      "text": "我還記得，那是第一天的早晨。"
+    },
+    {
+      "speaker": "旁白",
+      "portrait": "旁白.png",
+      "text": "陽光從窗邊灑下，老師微笑著走進教室。"
+    },
+    {
+      "speaker": "老師",
+      "portrait": "老師.png",
+      "text": "早安，同學們。今天我們聊聊『情緒的語言』。",
+      "side": "right"
+    },
+    {
+      "speaker": "主角",
+      "portrait": "主角.png",
+      "text": "（心想）不知道今天會發生什麼事……"
+    }
+  ]
+}

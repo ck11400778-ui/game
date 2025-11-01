@@ -1,0 +1,54 @@
+{
+  "current": "menu",
+  "personalities": [
+    {
+      "name": "勇氣",
+      "max_hp": 60,
+      "hp": 60,
+      "base_atk": 12,
+      "atk_bonus": 0,
+      "alive": true,
+      "sacrificed_times": 0
+    },
+    {
+      "name": "冷靜",
+      "max_hp": 48,
+      "hp": 48,
+      "base_atk": 9,
+      "atk_bonus": 0,
+      "alive": true,
+      "sacrificed_times": 0
+    },
+    {
+      "name": "衝動",
+      "max_hp": 42,
+      "hp": 42,
+      "base_atk": 15,
+      "atk_bonus": 0,
+      "alive": true,
+      "sacrificed_times": 0
+    }
+  ],
+  "calendar": {
+    "week": 3,
+    "day": 7,
+    "month": 1
+  },
+  "ap": {
+    "max_ap": 3,
+    "ap": 3
+  },
+  "emotions": {
+    "familiarity": 0,
+    "trust": 0,
+    "stress": 0
+  },
+  "ui": {
+    "notes": [],
+    "last_saved_at": 1761219540.1197736
+  },
+  "menu_sel": 6,
+  "flags": {
+    "night_count": 20
+  }
+}

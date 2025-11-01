@@ -1,0 +1,50 @@
+{
+  "id": "ch1_awaken_before",
+  "title": "第一章：覺醒之前",
+  "start": "p1_ground",
+  "nodes": {
+    "p1_ground": {
+      "dialogue": "ch1_p1_ground",
+      "next": "p2_corridor"
+    },
+    "p2_corridor": {
+      "dialogue": "ch1_p2_corridor",
+      "effects": [
+        {
+          "emotion": {
+            "var": "stress",
+            "who": "主角",
+            "delta": 3
+          }
+        }
+      ],
+      "next": "p3_dream_faint"
+    },
+    "p3_dream_faint": {
+      "dialogue": "ch1_p3_dream_faint",
+      "effects": [
+        {
+          "set_flag": "dream_saw_fire_shadow"
+        }
+      ],
+      "next": "p4_infirmary"
+    },
+    "p4_infirmary": {
+      "dialogue": "ch1_p4_infirmary",
+      "effects": [
+        {
+          "set_flag": "ch1_seen_mirror_shadow"
+        }
+      ],
+      "next": "p5_end"
+    },
+    "p5_end": {
+      "dialogue": "ch1_p5_end",
+      "effects": [
+        {
+          "set_flag": "ch1_done"
+        }
+      ]
+    }
+  }
+}

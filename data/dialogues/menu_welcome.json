@@ -1,0 +1,15 @@
+{
+  "id": "menu_welcome",
+  "lines": [
+    {
+      "speaker": "系統",
+      "portrait": "系統.png",
+      "text": "按 ENTER 開始，或選擇其他場景。"
+    },
+    {
+      "speaker": "系統",
+      "portrait": "系統.png",
+      "text": "F5 存檔，F9 載入。祝你順利。"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "id": "inf_rest_intro",
+  "lines": [
+    {
+      "speaker": "系統",
+      "text": "你稍作休息，壓力略微降低。"
+    },
+    {
+      "speaker": "主角",
+      "text": "好多了。",
+      "side": "right"
+    }
+  ]
+}

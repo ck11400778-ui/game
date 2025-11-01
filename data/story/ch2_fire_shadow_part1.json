@@ -1,0 +1,33 @@
+{
+  "id": "ch2_fire_shadow_part1",
+  "title": "第二章-上：火焰的影子（前半）",
+  "start": "s1_back_mountain",
+  "nodes": {
+    "s1_back_mountain": {
+      "dialogue": "ch2_s1_back_mountain",
+      "effects": [
+        {
+          "set_flag": "ch2_tried_summon"
+        }
+      ],
+      "next": "s2_dream_corridor"
+    },
+    "s2_dream_corridor": {
+      "dialogue": "ch2_s2_dream_corridor",
+      "effects": [
+        {
+          "set_flag": "ch2_broke_doors"
+        }
+      ],
+      "next": "s3_reality_event"
+    },
+    "s3_reality_event": {
+      "dialogue": "ch2_s3_reality_event",
+      "effects": [
+        {
+          "set_flag": "ch2_borrow_fire_trial_ready"
+        }
+      ]
+    }
+  }
+}

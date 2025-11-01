@@ -1,0 +1,46 @@
+{
+  "id": "ch3_first_match",
+  "title": "第三章：第一場比試",
+  "start": "b1_intro",
+  "nodes": {
+    "b1_intro": {
+      "dialogue": "ch3_b1_intro",
+      "next": "b2_battle_start"
+    },
+    "b2_battle_start": {
+      "dialogue": "ch3_b2_battle_start",
+      "effects": [
+        {
+          "set_flag": "battle_zhangboyao_started"
+        }
+      ],
+      "next": "b3_climax"
+    },
+    "b3_climax": {
+      "dialogue": "ch3_b3_climax",
+      "effects": [
+        {
+          "set_flag": "battle_zhangboyao_climax"
+        }
+      ],
+      "next": "b4_result"
+    },
+    "b4_result": {
+      "dialogue": "ch3_b4_result",
+      "effects": [
+        {
+          "set_flag": "battle_zhangboyao_won"
+        }
+      ],
+      "next": "b5_end"
+    },
+    "b5_end": {
+      "dialogue": "ch3_b5_end",
+      "effects": [
+        {
+          "set_flag": "ch3_done"
+        }
+      ]
+    }
+  }
+}

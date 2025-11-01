@@ -1,0 +1,87 @@
+{
+  "id": "teacher_intro",
+  "lines": [
+    {
+      "speaker": "老師",
+      "portrait": "老師.png",
+      "text": "早安，同學。今天的重點是『管理自己的心緒』。"
+    },
+    {
+      "speaker": "主角",
+      "portrait": "主角.png",
+      "text": "老師早。"
+    },
+    {
+      "speaker": "老師",
+      "portrait": "老師.png",
+      "text": "記得需要幫助就開口，同學之間互相支持。",
+      "side": "right"
+    }
+  ],
+  "meta": {
+    "original": {
+      "id": "teacher_intro",
+      "start": "n1",
+      "nodes": [
+        {
+          "id": "n1",
+          "type": "line",
+          "speaker": "老師",
+          "text": "你最近的表現，我都看在眼裡。"
+        },
+        {
+          "id": "c1",
+          "type": "choice",
+          "choices": [
+            {
+              "text": "謝謝老師的指導",
+              "next": "n2",
+              "effects": [
+                {
+                  "type": "add_personality",
+                  "name": "自信",
+                  "hp": 54,
+                  "atk": 11
+                },
+                {
+                  "type": "set_flag",
+                  "scope": "campus",
+                  "key": "teacher",
+                  "value": true
+                }
+              ]
+            },
+            {
+              "text": "我還有很多要學",
+              "next": "n3",
+              "effects": [
+                {
+                  "type": "heal_all",
+                  "amount": 2
+                },
+                {
+                  "type": "set_flag",
+                  "scope": "campus",
+                  "key": "teacher",
+                  "value": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "n2",
+          "type": "line",
+          "speaker": "老師",
+          "text": "保持這份自信，去面對接下來的挑戰吧。"
+        },
+        {
+          "id": "n3",
+          "type": "line",
+          "speaker": "老師",
+          "text": "很好，謙虛會讓你走得更穩。"
+        }
+      ]
+    }
+  }
+}

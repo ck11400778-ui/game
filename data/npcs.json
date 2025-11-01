@@ -1,0 +1,420 @@
+[
+  {
+    "id": "n1_xu_peng_assistant_xiaoyou",
+    "name": "小祐",
+    "title": "徐芃學姊助理",
+    "area": "infirmary",
+    "traits": "細心但怕血",
+    "dialogue_id": "npc_n1_intro",
+    "effects": [
+      {
+        "affinity": {
+          "水": 1,
+          "陰沉": 1
+        }
+      },
+      {
+        "flag": {
+          "side_therapy_unlocked": true
+        }
+      }
+    ]
+  },
+  {
+    "id": "n2_sports_junior_azhe",
+    "name": "阿哲",
+    "title": "體育系學弟",
+    "area": "playground",
+    "traits": "熱血笨拙",
+    "dialogue_id": "npc_n2_intro",
+    "effects": [
+      {
+        "affinity": {
+          "火": 1,
+          "土": 1
+        }
+      },
+      {
+        "flag": {
+          "temp_battle_tutor": true
+        }
+      }
+    ]
+  },
+  {
+    "id": "n3_admin_assistant_lina",
+    "name": "莉娜",
+    "title": "文書處助理",
+    "area": "admin_building",
+    "traits": "冷淡、完美主義",
+    "dialogue_id": "npc_n3_intro",
+    "effects": [
+      {
+        "affinity": {
+          "理性": 1
+        }
+      },
+      {
+        "flag": {
+          "president_db_hint": true
+        }
+      }
+    ]
+  },
+  {
+    "id": "n4_cleaner_auntie",
+    "name": "清潔阿姨",
+    "title": "走廊清潔員",
+    "area": "corridor",
+    "traits": "嘮叨但親切",
+    "dialogue_id": "npc_n4_intro",
+    "effects": [
+      {
+        "affinity": {
+          "木": 1,
+          "水": 1
+        }
+      },
+      {
+        "flag": {
+          "rumor_hint": true
+        }
+      }
+    ]
+  },
+  {
+    "id": "n5_librarian_old_qin",
+    "name": "老秦",
+    "title": "圖書館管理員",
+    "area": "library",
+    "traits": "嚴肅、注重秩序",
+    "dialogue_id": "npc_n5_intro",
+    "effects": [
+      {
+        "affinity": {
+          "陰沉": 1
+        }
+      },
+      {
+        "affinity": {
+          "理性": 1
+        }
+      },
+      {
+        "flag": {
+          "dream_trial_clue": true
+        }
+      }
+    ]
+  },
+  {
+    "id": "n6_litclub_president_chen_yuqing",
+    "name": "陳雨晴",
+    "title": "文學社社長",
+    "area": "club_building",
+    "traits": "思想細膩，略帶神秘",
+    "dialogue_id": "npc_n6_intro",
+    "effects": [
+      {
+        "affinity": {
+          "幻想": 1,
+          "霧": 1
+        }
+      },
+      {
+        "flag": {
+          "mist_persona_side": true
+        }
+      }
+    ]
+  },
+  {
+    "id": "n7_journalist_bai_ting",
+    "name": "白庭",
+    "title": "新聞社記者",
+    "area": "gate",
+    "traits": "愛八卦、快言快語",
+    "dialogue_id": "npc_n7_intro",
+    "effects": [
+      {
+        "affinity": {
+          "光": 1
+        }
+      },
+      {
+        "flag": {
+          "chapter_news_ready": true
+        }
+      }
+    ]
+  },
+  {
+    "id": "n8_canteen_aunt_fang",
+    "name": "芳姐",
+    "title": "餐廳阿姨",
+    "area": "canteen",
+    "traits": "健談、母性",
+    "dialogue_id": "npc_n8_intro",
+    "effects": [
+      {
+        "affinity": {
+          "水": 1
+        }
+      },
+      {
+        "flag": {
+          "warm_event_possible": true
+        }
+      }
+    ]
+  },
+  {
+    "id": "n9_lab_senior_jiang_hua",
+    "name": "江樺",
+    "title": "理工系學長",
+    "area": "lab",
+    "traits": "理論派、沉默寡言",
+    "dialogue_id": "npc_n9_intro",
+    "effects": [
+      {
+        "affinity": {
+          "理性": 1,
+          "金": 1
+        }
+      },
+      {
+        "flag": {
+          "device_upgrade_help": true
+        }
+      }
+    ]
+  },
+  {
+    "id": "n10_guitar_member_xiaoan",
+    "name": "小安",
+    "title": "吉他社員",
+    "area": "music_club",
+    "traits": "憂鬱溫柔",
+    "dialogue_id": "npc_n10_intro",
+    "effects": [
+      {
+        "affinity": {
+          "木": 1,
+          "陰沉": 1
+        }
+      },
+      {
+        "flag": {
+          "gaorouyu_side": true
+        }
+      }
+    ]
+  },
+  {
+    "id": "n11_photo_member_ye_qing",
+    "name": "葉青",
+    "title": "攝影社員",
+    "area": "photo_club",
+    "traits": "安靜、觀察型",
+    "dialogue_id": "npc_n11_intro",
+    "effects": [
+      {
+        "affinity": {
+          "光": 1
+        }
+      },
+      {
+        "flag": {
+          "hidden_photos_unlocked": true
+        }
+      }
+    ]
+  },
+  {
+    "id": "n12_drama_vice_meng_heng",
+    "name": "孟恆",
+    "title": "戲劇社副社長",
+    "area": "drama_club",
+    "traits": "戲精、誇張",
+    "dialogue_id": "npc_n12_intro",
+    "effects": [
+      {
+        "affinity": {
+          "幻想": 1,
+          "火": 1
+        }
+      },
+      {
+        "flag": {
+          "liroutong_side": true
+        }
+      }
+    ]
+  },
+  {
+    "id": "n13_cheer_wu_xinyan",
+    "name": "吳欣妍",
+    "title": "啦啦隊員",
+    "area": "playground",
+    "traits": "外向活潑",
+    "dialogue_id": "npc_n13_intro",
+    "effects": [
+      {
+        "affinity": {
+          "風": 1,
+          "光": 1
+        }
+      },
+      {
+        "flag": {
+          "rival_caizhihan": true
+        }
+      }
+    ]
+  },
+  {
+    "id": "n14_dorm_manager_azhibo",
+    "name": "阿志伯",
+    "title": "宿舍管理員",
+    "area": "dorm",
+    "traits": "嘮叨但關心",
+    "dialogue_id": "npc_n14_intro",
+    "effects": [
+      {
+        "affinity": {
+          "土": 1
+        }
+      },
+      {
+        "flag": {
+          "night_event_trigger": true
+        }
+      }
+    ]
+  },
+  {
+    "id": "n15_mystery_transfer_shen_mo",
+    "name": "沈默",
+    "title": "神秘轉學生",
+    "area": "classroom_veranda",
+    "traits": "冷淡、目光銳利",
+    "dialogue_id": "npc_n15_intro",
+    "effects": [
+      {
+        "affinity": {
+          "混沌": 1
+        }
+      },
+      {
+        "flag": {
+          "main_foreshadow_after_ch2": true
+        }
+      }
+    ]
+  },
+  {
+    "id": "n16_garden_member_lin_hui",
+    "name": "林卉",
+    "title": "園藝社社員",
+    "area": "garden",
+    "traits": "溫柔、天然呆",
+    "dialogue_id": "npc_n16_intro",
+    "effects": [
+      {
+        "affinity": {
+          "木": 1,
+          "水": 1
+        }
+      },
+      {
+        "flag": {
+          "plant_observe_side": true
+        }
+      }
+    ]
+  },
+  {
+    "id": "n17_store_clerk_akun",
+    "name": "阿昆",
+    "title": "便利商店店員",
+    "area": "convenience_store",
+    "traits": "愛開玩笑",
+    "dialogue_id": "npc_n17_intro",
+    "effects": [
+      {
+        "affinity": {
+          "火": 1,
+          "風": 1
+        }
+      },
+      {
+        "flag": {
+          "consumable_items_sold": true
+        }
+      }
+    ]
+  },
+  {
+    "id": "n18_it_senior_wang_yuxin",
+    "name": "王語心",
+    "title": "資訊組學姐",
+    "area": "computer_room",
+    "traits": "理智、少話",
+    "dialogue_id": "npc_n18_intro",
+    "effects": [
+      {
+        "affinity": {
+          "理性": 1,
+          "金": 1
+        }
+      },
+      {
+        "flag": {
+          "system_mission_tutor": true
+        }
+      }
+    ]
+  },
+  {
+    "id": "n19_manga_member_liu_xiaokui",
+    "name": "劉小葵",
+    "title": "漫畫社社員",
+    "area": "club_building",
+    "traits": "熱衷二次元",
+    "dialogue_id": "npc_n19_intro",
+    "effects": [
+      {
+        "affinity": {
+          "幻想": 1,
+          "混沌": 1
+        }
+      },
+      {
+        "flag": {
+          "zhouzici_side": true
+        }
+      }
+    ]
+  },
+  {
+    "id": "n20_canteen_cleaner_old_cao",
+    "name": "老曹",
+    "title": "學餐清潔員",
+    "area": "canteen_back",
+    "traits": "冷面、實際",
+    "dialogue_id": "npc_n20_intro",
+    "effects": [
+      {
+        "affinity": {
+          "土": 1,
+          "陰沉": 1
+        }
+      },
+      {
+        "flag": {
+          "hidden_clue_holder": true
+        }
+      }
+    ]
+  }
+]

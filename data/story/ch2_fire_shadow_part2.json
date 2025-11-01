@@ -1,0 +1,24 @@
+{
+  "id": "ch2_fire_shadow_part2",
+  "title": "第二章-下：火焰的影子（後半）",
+  "start": "s4_dream_complete",
+  "nodes": {
+    "s4_dream_complete": {
+      "dialogue": "ch2_s4_dream_complete",
+      "effects": [
+        {
+          "set_flag": "unlocked_fire_persona"
+        }
+      ],
+      "next": "s5_end"
+    },
+    "s5_end": {
+      "dialogue": "ch2_s5_end",
+      "effects": [
+        {
+          "set_flag": "ch2_done"
+        }
+      ]
+    }
+  }
+}

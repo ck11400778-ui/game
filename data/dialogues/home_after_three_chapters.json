@@ -1,0 +1,18 @@
+{
+  "id": "home_after_three_chapters",
+  "lines": [
+    {
+      "speaker": "主角",
+      "text": "今天……發生了太多事情。"
+    },
+    {
+      "speaker": "主角",
+      "text": "回家吧。明天，開始真正的練習。",
+      "side": "right"
+    },
+    {
+      "speaker": "系統",
+      "text": "你回到家，夜色沉沉。休息了一晚……"
+    }
+  ]
+}

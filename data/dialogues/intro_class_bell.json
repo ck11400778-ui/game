@@ -1,0 +1,14 @@
+{
+  "id": "intro_class_bell",
+  "lines": [
+    {
+      "speaker": "系統",
+      "text": "（鈴聲大作——上課時間即將開始）"
+    },
+    {
+      "speaker": "王老師",
+      "text": "各自就座。今天的訓練會比昨天更難。",
+      "side": "right"
+    }
+  ]
+}

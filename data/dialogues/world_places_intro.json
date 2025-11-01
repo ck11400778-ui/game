@@ -1,0 +1,20 @@
+{
+  "id": "world_places_intro",
+  "lines": [
+    {
+      "speaker": "旁白",
+      "portrait": "旁白.png",
+      "text": "校園之外，也有許多可以探索的角落。"
+    },
+    {
+      "speaker": "旁白",
+      "portrait": "旁白.png",
+      "text": "不同的場所會觸發不同的事件與任務。"
+    },
+    {
+      "speaker": "旁白",
+      "portrait": "旁白.png",
+      "text": "留意線索，按自己的步調前進。"
+    }
+  ]
+}

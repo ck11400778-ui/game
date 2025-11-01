@@ -1,0 +1,20 @@
+{
+  "id": "mind_hub_intro",
+  "lines": [
+    {
+      "speaker": "系統",
+      "portrait": "系統.png",
+      "text": "歡迎來到『心靈中樞』。"
+    },
+    {
+      "speaker": "系統",
+      "portrait": "系統.png",
+      "text": "在這裡，你可以整理情緒、檢視人格與能力。"
+    },
+    {
+      "speaker": "系統",
+      "portrait": "系統.png",
+      "text": "隨時回來看看，有新的思緒會解鎖。"
+    }
+  ]
+}

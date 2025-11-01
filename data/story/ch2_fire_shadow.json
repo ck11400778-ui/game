@@ -1,0 +1,52 @@
+{
+  "id": "ch2_fire_shadow",
+  "title": "第二章：火焰的影子",
+  "start": "s1_back_mountain",
+  "nodes": {
+    "s1_back_mountain": {
+      "dialogue": "ch2_s1_back_mountain",
+      "effects": [
+        {
+          "set_flag": "ch2_tried_summon"
+        }
+      ],
+      "next": "s2_dream_corridor"
+    },
+    "s2_dream_corridor": {
+      "dialogue": "ch2_s2_dream_corridor",
+      "effects": [
+        {
+          "set_flag": "ch2_broke_doors"
+        }
+      ],
+      "next": "s3_reality_event"
+    },
+    "s3_reality_event": {
+      "dialogue": "ch2_s3_reality_event",
+      "effects": [
+        {
+          "set_flag": "ch2_borrowed_fire"
+        }
+      ],
+      "next": "s4_dream_complete"
+    },
+    "s4_dream_complete": {
+      "dialogue": "ch2_s4_dream_complete",
+      "effects": [
+        {
+          "set_flag": "unlocked_fire_persona"
+        }
+      ],
+      "next": "s5_end"
+    },
+    "s5_end": {
+      "dialogue": "ch2_s5_end",
+      "effects": [
+        {
+          "set_flag": "ch2_done"
+        }
+      ],
+      "move_to": "classroom"
+    }
+  }
+}
