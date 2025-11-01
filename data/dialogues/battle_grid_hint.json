@@ -1,0 +1,15 @@
+{
+  "id": "battle_grid_hint",
+  "lines": [
+    {
+      "speaker": "提示",
+      "portrait": "系統.png",
+      "text": "↑↓←→ 移動；Enter/空白 確認；Esc 返回。"
+    },
+    {
+      "speaker": "提示",
+      "portrait": "系統.png",
+      "text": "切換棋盤時，指標不需按 Tab。"
+    }
+  ]
+}
